@@ -4,10 +4,11 @@ import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import dotenv from "dotenv";
+import cors from 'cors';
 
 import indexRouter from "./routes/index";
 import taskRouter from "./routes/tasks";
-import morgan from "morgan";
+
 
 dotenv.config();
 
@@ -24,6 +25,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(cors({
+  origin: ["http://localhost:3200"],
+  methods:["GET","PUT", "POST", "PATCH", "DELETE"],
+  credentials: true
+}))
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`hello from the middleware`);
