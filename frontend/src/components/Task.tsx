@@ -2,6 +2,12 @@ import { FaEdit } from "react-icons/fa";
 import { FaCheckDouble } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 
+interface Tasks {
+  _id: string;
+  name: string;
+  completed: boolean;
+}
+
 interface TaskProps {
   task: {
     _id: string;
@@ -10,9 +16,10 @@ interface TaskProps {
   };
   index: number;
   deleteTask: (id: string) => void;
+  getSingleTask: (task: Tasks) => void;
 }
 
-function Task({ task, index, deleteTask }: TaskProps) {
+function Task({ task, index, deleteTask, getSingleTask }: TaskProps) {
   return (
     <div className="task">
       <p>
@@ -21,7 +28,7 @@ function Task({ task, index, deleteTask }: TaskProps) {
       </p>
       <div className="task-icons">
         <FaCheckDouble color="green" />
-        <FaEdit color="purple" />
+        <FaEdit color="purple" onClick={() => getSingleTask(task)} />
         <FaRegTrashAlt color="red" onClick={() => deleteTask(task._id)} />
       </div>
     </div>
