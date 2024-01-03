@@ -15,7 +15,7 @@ interface Task {
 
 export default function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  // const [completedTasks, setCompletedTasks] = useState(false);
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [taskId, setTaskId] = useState("");
@@ -69,6 +69,7 @@ export default function TaskList() {
         console.log(res.data);
         toast.success(`Task added successfully`);
         setFormData({ ...formData, name: "" });
+        getTasks()
       })
       .catch((error) => {
         if (error.response) {
@@ -99,6 +100,13 @@ export default function TaskList() {
       });
   }
 
+  useEffect(() => {
+    const cTask = tasks.filter((task) => {
+      return task.completed === true;
+    });
+    setCompletedTasks(cTask);
+  }, [tasks]);
+
   async function getSingleTask(task: Task) {
     setFormData({ name: task.name, completed: false });
     setTaskId(task._id);
@@ -119,6 +127,20 @@ export default function TaskList() {
     }
   }
 
+  async function setToComplete(task: Task) {
+    const newFormData = {
+      name: task.name,
+      completed: true,
+    };
+    try {
+      await axios.patch(`${URL}/api/v1/tasks/${task._id}`, newFormData);
+      toast.success(`task status successfully updated`);
+      getTasks();
+    } catch (error) {
+      toast.error((error as Error).message);
+    }
+  }
+
   return (
     <div>
       <h2>Task Manager</h2>
@@ -129,12 +151,13 @@ export default function TaskList() {
         isEditing={isEditing}
         updateTask={updateTask}
       />
+      {tasks.length === 0 && <p>No task found, enter a new task</p>}
       <div className="--flex-between --pb">
         <p>
-          <b>Total Tasks:</b>0
+          <b>Total Tasks:</b> {tasks.length}
         </p>
         <p>
-          <b>Completed Tasks:</b>0
+          <b>Completed Tasks:</b> {completedTasks.length}
         </p>
       </div>
       <hr />
@@ -155,6 +178,7 @@ export default function TaskList() {
                 index={index}
                 deleteTask={deleteTask}
                 getSingleTask={getSingleTask}
+                setToComplete={setToComplete}
               />
             );
           })}
