@@ -69,7 +69,7 @@ export default function TaskList() {
         console.log(res.data);
         toast.success(`Task added successfully`);
         setFormData({ ...formData, name: "" });
-        getTasks()
+        getTasks();
       })
       .catch((error) => {
         if (error.response) {
