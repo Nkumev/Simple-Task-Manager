@@ -9,11 +9,7 @@ interface Tasks {
 }
 
 interface TaskProps {
-  task: {
-    _id: string;
-    name: string;
-    completed: boolean;
-  };
+  task: Tasks
   index: number;
   deleteTask: (id: string) => void;
   getSingleTask: (task: Tasks) => void;
